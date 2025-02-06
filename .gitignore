@@ -1,3 +1,5 @@
 .idea
+/rl_env
 requirements.txt
+core/__pycache__/
 
