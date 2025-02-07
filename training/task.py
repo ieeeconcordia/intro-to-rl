@@ -1,12 +1,16 @@
 from agent import Agent
 from env import Env
 from typing import Tuple, List, Dict
+import matplotlib.pyplot as plt
+
+import numpy as np
+import time
 
 def train_episode(
     env,
     agent: Agent,
     render: bool = False,
-    max_steps: int = 500
+    max_steps: int = 100,
 ) -> Tuple[float, int, List[Dict[str, float]]]:
     """
     Train the agent for one episode.
@@ -23,11 +27,11 @@ def train_episode(
     state, _ = env.reset()
     total_reward = 0
     stats_list = []
-    
     for step in range(max_steps):
         if render:
             env.render()
             
+
         # Select and take action
         action = agent.select_action(state)
         next_state, reward, terminated, truncated, _ = env.step(action)
@@ -46,9 +50,7 @@ def train_episode(
             
     return total_reward, step + 1, stats_list
 def main():
-    """Example usage of the ActorCriticAgent"""
     from env import Env
-    
     # Create environment and agent
     env = Env(render_mode="human")
     agent = Agent(
@@ -58,15 +60,24 @@ def main():
         gamma=0.99
     )
     
-    # Training loop
+    time = []
+    rewards = []
+    num_time_steps = 0
     num_episodes = 100
     for episode in range(num_episodes):
+
         total_reward, steps, stats = train_episode(
             env, 
             agent,
             render=(episode % 10 == 0)  # Render every 10th episode
         )
+    
+        num_time_steps+=steps
+        time.append(num_time_steps)
+        rewards.append(total_reward)
+        
         print(f"Episode {episode}: Reward = {total_reward:.2f}, Steps = {steps}")
+
         
     env.close()
 
